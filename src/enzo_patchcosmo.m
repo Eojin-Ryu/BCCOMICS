@@ -47,8 +47,8 @@ datstat = fscanf(fin,'%e %e %e %e %e %e %e %e %e')';
 stdDc = datstat(1); 
 fclose(fin);
 
-flagmean = (abs(Dc)/stdDc <1e-2); %% flag for mean-density cases
-
+flagmean = (abs(Dc)/stdDc <1.1e-2); %% flag for mean-density cases
+disp(abs(Dc)/stdDc);
 if flagmean
   disp('This patch has zero overdensity, so it is not needed to calculate local parameters.');
   disp('Stopping enzo_patchcosmo.');
@@ -171,8 +171,14 @@ else
       idx_final_ode   = find(a_loc_ode<aloc_test_before_ta, 1,'last');
       idx_final_local = find(tHiglobal_enzo<tHiode(idx_final_ode), 1,'last');
     else
+      [tHiode, a_loc_ode] = ode45(@fdadt, [tiHi, tfHi], sqrt(2*tiHi*sqrt(Omr_l_i))*aloci, options);
+      idx_final_ode   = length(tHiode);
       idx_final_local = length(tHiglobal_enzo);
     end
+  else
+    [tHiode, a_loc_ode] = ode45(@fdadt, [tiHi, tfHi], sqrt(2*tiHi*sqrt(Omr_l_i))*aloci, options);
+    idx_final_ode = length(tHiode);
+    idx_final_local = length(tHiglobal_enzo);
   end
   
   tHiglobal_enzo = tHiglobal_enzo(1:idx_final_local);
