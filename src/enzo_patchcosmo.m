@@ -43,12 +43,13 @@ Thc = iccdat(6);
 fin = fopen('stats_zend.dat','r');
 dum = fgetl(fin);
 dum = fgetl(fin);
-datstat = fscanf(fin,'%e %e %e %e %e %e %e %e %e')';
-stdDc = datstat(1); 
+datstat = fscanf(fin,'%e %e %e %e %e %e %e %e')';
+stdDc = datstat(1);
 fclose(fin);
 
-flagmean = (abs(Dc)/stdDc <1.1e-2); %% flag for mean-density cases
-disp(abs(Dc)/stdDc);
+Dm = fc * Dc + fb * Db;
+flagmean = (abs(Dm)/datstat(8) <1.1e-2); %% flag for mean-density cases
+disp(abs(Dm)/datstat(8));
 if flagmean
   disp('This patch has zero overdensity, so it is not needed to calculate local parameters.');
   disp('Stopping enzo_patchcosmo.');
@@ -72,7 +73,7 @@ else
 
   rhocrit_i       = 3*(H_i    *s_inMyr)^2 / (8*pi*G); %% g/cm^3
   rhocrit_loc_i   = 3*(H_loc_i*s_inMyr)^2 / (8*pi*G); %% g/cm^3
-  rhocrit_ratio_i = rhocrit_loc_i/rhocrit_i; 
+  rhocrit_ratio_i = rhocrit_loc_i/rhocrit_i;
 
   %% initial global Omega's.
   Om_i       = (Om0 /azend^3) / thefactor^2;
@@ -80,7 +81,7 @@ else
   OmLambda_i = (OmLambda0)    / thefactor^2;
 
   %% initial local Omega's.
-  Om_loc_i       = Om_i*(1+Dc)/ rhocrit_ratio_i;
+  Om_loc_i       = Om_i*(1+Dm)/ rhocrit_ratio_i;
   Omr_loc_i      = Omr_i      / rhocrit_ratio_i;
   OmLambda_loc_i = OmLambda_i / rhocrit_ratio_i;
   OmK_loc_i      = 1 - (Om_loc_i + Omr_loc_i + OmLambda_loc_i);
@@ -118,13 +119,13 @@ else
 
 %%%% time ~ (scale factor) table for global case.
   %% take small enough value for radiation domination
-  tiHi                 = 0.000001; 
+  tiHi                 = 0.000001;
   tfHi                 = 1000;
   options              = odeset('RelTol',1e-6,'AbsTol',1e-9);
   %% initial a value, assuming radiation domination, is given analytically.
   [tHiode, aglobalode] = ode45(@fdadt, [tiHi, tfHi], sqrt(2*tiHi*sqrt(Omr_i))*a_i, options);
-  while (max(aglobalode)<0.5) %% Lets make the final a at tfHi to be larger than 0.5.
-    tfHi                 = 2*tfHi; 
+  while (max(aglobalode)<1.1) %% Lets make the final a at tfHi to be larger than 1.1.
+    tfHi                 = 2*tfHi;
     [tHiode, aglobalode] = ode45(@fdadt, [tiHi, tfHi], sqrt(2*tiHi*sqrt(Omr_i))*a_i, options);
   end
   %% tHi table corresponding to aglobal table.
@@ -180,7 +181,7 @@ else
     idx_final_ode = length(tHiode);
     idx_final_local = length(tHiglobal_enzo);
   end
-  
+
   tHiglobal_enzo = tHiglobal_enzo(1:idx_final_local);
   aloc_enzo = interp1(tHiode(1:idx_final_ode), a_loc_ode(1:idx_final_ode), tHiglobal_enzo, 'pchip');
   alocf     = aloc_enzo(length(aloc_enzo));
@@ -203,7 +204,7 @@ else
 
   %% Enzo uses "0" values to denote when the scale factor = 1, and
   %% redshift = 0. In order to satisfy this convention AND make the time
-  %% of alocf correspond to "0", from the relation 
+  %% of alocf correspond to "0", from the relation
   %% aloc/alocf = (1+zlocf)/(1+zloc) = 1/(1+zloc_new),
   %% 1+zloc_new = (1+zloc)/(1+zlocf), or zloc_new = (1+zloc)/(1+zlocf) -1.
   %% This also means                     zloc_new = alocf/aloc -1.
@@ -223,11 +224,11 @@ else
   fprintf(fout, 'CosmologyOmegaLambdaNow    = %f\n', OmLambda0_l );
   fprintf(fout, 'CosmologyOmegaRadiationNow = %f\n', Omr0_l      );
   fprintf(fout, 'CosmologyHubbleConstantNow = %f\n', h0_l        );
-  %% comoving box size is the proper size at "0", so it is 
+  %% comoving box size is the proper size at "0", so it is
   %% (proper size at a_i)*(expansion ratio) = L * a_i * (alocf/aloci) = L * alocf
   %% But also, Lbox_p_inMpch uses h, not h0_l, so need to rescale with (h0_l/h)
-  fprintf(fout, 'CosmologyComovingBoxSize   = %f  ', Lbox_p_inMpch*(h0_l/h)*alocf); 
-  fprintf(fout, ' // Mpc/h\n' );  
+  fprintf(fout, 'CosmologyComovingBoxSize   = %f  ', Lbox_p_inMpch*(h0_l/h)*alocf);
+  fprintf(fout, ' // Mpc/h\n' );
   fprintf(fout, 'CosmologyInitialRedshift   = %f\n', zloc_new_enzo(1)      );
   fprintf(fout, 'CosmologyFinalRedshift     = %f\n', zloc_new_enzo(Nz_enzo));
   fprintf(fout, '\n');

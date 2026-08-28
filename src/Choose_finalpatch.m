@@ -3,7 +3,7 @@
 
 %% read in V_cb field: V_cb = Vc-Vb
 if matlabflag
-  load([setupdir '/V_cb_1_azend.matbin'], '-mat', 'V_cb_1_azend');  
+  load([setupdir '/V_cb_1_azend.matbin'], '-mat', 'V_cb_1_azend');
   load([setupdir '/V_cb_2_azend.matbin'], '-mat', 'V_cb_2_azend');
   load([setupdir '/V_cb_3_azend.matbin'], '-mat', 'V_cb_3_azend');
   load([setupdir '/DT_azend.matbin'],     '-mat', 'DT3D_azend');
@@ -33,15 +33,16 @@ Ncc_azend = length(cellspec_azend(:,1)); %% # of chosen patchess
 fin=fopen([setupdir '/stats_zi.dat']);
 fgets(fin); %% skip a line
 fgets(fin); %% skip another line
-statszi = fscanf(fin, '%e %e %e %e %e %e %e %e %e');
+statszi = fscanf(fin, '%e %e %e %e %e %e %e %e %e %e');
 fclose(fin);
 
 %% Let user choose a patch
 disp('Patches ordered in calculation time, from oldest(top) to newest(bottom)');
 disp('-----------------------------------------------------------------------');
-disp('Patch #  ix  iy  iz  Deltac/sigma(Deltac)  V_cb(km/s)  at z=1000');
+disp('Patch #  ix  iy  iz  Delta_m/sigma(Delta_m)  V_cb(km/s)  at z=1000');
 for ip=1:Ncc
-  AA = [ip cellspec(ip,1) cellspec(ip,2) cellspec(ip,3) cellspec(ip,4)/statszi(1) cellspec(ip,11)];
+  Dm_ip = fc * cellspec(ip,4) + fb * cellspec(ip,5);
+  AA = [ip cellspec(ip,1) cellspec(ip,2) cellspec(ip,3) Dm_ip/statszi(10) cellspec(ip,11)];
   fprintf('%3i     %3i %3i %3i     %10.3e         %10.3e\n',AA);
 end
 disp(['Choose a patch of your interest; default is ' num2str(Ncc) ' if you just hit Enter below.']);
