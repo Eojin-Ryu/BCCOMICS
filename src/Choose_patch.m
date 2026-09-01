@@ -107,7 +107,7 @@ if patchidxinput_flag
 elseif choose_zi_flag
   %% When zi values are used: ------------------------------------------- begin
   disp(['Standard deviation of Matter overdensities (sDm) is ' num2str(stdDm)]);
-  disp('Choose matter overdensity environment:');
+  disp('Choose Matter overdensity environment:');
   odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense:');
 
   if (odflag==0)
@@ -126,7 +126,7 @@ elseif choose_zi_flag
     returnflag=true;
     return;
   end
-  disp(['matter overdensity chosen: Delta_m = ' num2str(odnum/stdDm) '*sDm = ' num2str(odnum)]);
+  disp(['Matter overdensity chosen: Delta_m = ' num2str(odnum/stdDm) '*sDm = ' num2str(odnum)]);
   disp('---------------------------------------');
   disp(['RMS of Vbc (rmsV) at z = ' num2str(zi) ' is ' num2str(rmsVcb*MpcMyr_2_kms) ' km/s']);
   disp(['Peak of Vbc in Maxwell-Boltzmann distribution is ' num2str(Vcbp*MpcMyr_2_kms) ' km/s']);
