@@ -188,7 +188,7 @@ else
     returnflag=true;
     return;
   end
-  disp(['matter overdensity chosen: Delta_m = ' num2str(odnum/sDm_azend) '*sDm = ' num2str(odnum)]);
+  disp(['Matter overdensity chosen: Delta_m = ' num2str(odnum/sDm_azend) '*sDm = ' num2str(odnum)]);
   disp('---------------------------------------');
   disp(['RMS of Vbc (rmsV) at z = ' num2str(zzend) ' is ' num2str(rmsVcb_azend*MpcMyr_2_kms) ' km/s']);
   disp(['Peak of Vbc in Maxwell-Boltzmann distribution is ' num2str(Vcbp_azend*MpcMyr_2_kms) ' km/s']);
