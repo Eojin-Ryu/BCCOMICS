@@ -91,7 +91,8 @@ fprintf(fout,'Units:   None   Myr^-1  None   Myr^-1  km/s    km/s  None None\n')
 fprintf(fout,'%e %e %e %e %e %e %e %e\n', datstat);
 fclose(fout);
 
-ee = 1e-2;
+ee_d = 5e-3;
+ee_v = 1e-2;
 
 if patchidxinput_flag
   if (exist('idx1') && exist('idx2') && exist('idx3'))
@@ -137,8 +138,8 @@ elseif choose_zi_flag
   %% Find index of patches with user-selected overdensity and Vcb (with ~1% margin)
   %% Need ee*sDm and ee*rmsVcb for odnum=0 case.
   %% numeric flags are multiplied below to mimic "AND" boolean
-  ind_od  = find((odnum - ee*abs(odnum) -ee*stdDm <= Delta_m(:)).*(Delta_m(:) <= odnum + ee*abs(odnum) +ee*stdDm ));
-  ind_vcb = find(((1-ee)*Vcbnum          <= Vcb(:)    ).*(Vcb(:)     <= (1+ee)*Vcbnum+ee*rmsVcb));
+  ind_od  = find((odnum - ee_d*abs(odnum) -ee_d*stdDm <= Delta_m(:)).*(Delta_m(:) <= odnum + ee_d*abs(odnum) +ee_d*stdDm ));
+  ind_vcb = find(((1-ee_v)*Vcbnum          <= Vcb(:)    ).*(Vcb(:)     <= (1+ee_v)*Vcbnum+ee_v*rmsVcb));
 
   %% indices of patches satisfying both conditions
   indices_patch = ind_od(ismember(ind_od,ind_vcb));
@@ -146,8 +147,8 @@ elseif choose_zi_flag
     disp([num2str(length(indices_patch)) ' patches out of total ' num2str(Ncell^3) ' patches satisfy your chosen condition with 1% margin.']);
   else %% In case no patch is found, relax the condition
     disp('Loosening patch finding condition to 2%');
-    ind_od  = find((odnum - 2*ee*abs(odnum) -2*ee*stdDm <= Delta_m(:)).*(Delta_m(:) <= odnum + 2*ee*abs(odnum) +2*ee*stdDm   ));
-    ind_vcb = find(((1-2*ee)*Vcbnum            <= Vcb(:)    ).*(Vcb(:)     <= (1+2*ee)*Vcbnum+2*ee*rmsVcb));
+    ind_od  = find((odnum - 2*ee_d*abs(odnum) -2*ee_d*stdDm <= Delta_m(:)).*(Delta_m(:) <= odnum + 2*ee_d*abs(odnum) +2*ee_d*stdDm   ));
+    ind_vcb = find(((1-2*ee_v)*Vcbnum            <= Vcb(:)    ).*(Vcb(:)     <= (1+2*ee_v)*Vcbnum+2*ee_v*rmsVcb));
     indices_patch = ind_od(ismember(ind_od,ind_vcb));
     if (length(indices_patch)==0)
       disp('No such patch exists. Note that Vcb=0 case is very rare by nature!!');
@@ -168,8 +169,8 @@ elseif choose_zi_flag
 
 else
   %% When zzend values are used: ------------------------------------------- begin
-  disp(['Standard deviation of matter overdensities (sDm) is ' num2str(sDm_azend)]);
-  disp('Choose matter overdensity environment:');
+  disp(['Standard deviation of Matter overdensities (sDm) is ' num2str(sDm_azend)]);
+  disp('Choose Matter overdensity environment:');
   odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense:');
 
   if (odflag==0)
@@ -200,8 +201,8 @@ else
   %% Find index of patches with user-selected overdensity and Vcb (with ~1% margin)
   %% Need ee*sDm and ee*rmsVcb for odnum=0 case.
   %% numeric flags are multiplied below to mimic "AND" boolean
-  ind_od  = find((odnum - ee*abs(odnum) -ee*sDm_azend <= Dm3D_azend(:)).*(Dm3D_azend(:) <= odnum + ee*abs(odnum) +ee*sDm_azend   ));
-  ind_vcb = find(((1-ee)*Vcbnum              <= Vcb_azend(:) ).*(Vcb_azend(:)  <= (1+ee)*Vcbnum+ee*rmsVcb_azend));
+  ind_od  = find((odnum - ee_d*abs(odnum) -ee_d*sDm_azend <= Dm3D_azend(:)).*(Dm3D_azend(:) <= odnum + ee_d*abs(odnum) +ee_d*sDm_azend   ));
+  ind_vcb = find(((1-ee_v)*Vcbnum              <= Vcb_azend(:) ).*(Vcb_azend(:)  <= (1+ee_v)*Vcbnum+ee_v*rmsVcb_azend));
 
   %% indices of patches satisfying both conditions
   indices_patch = ind_od(ismember(ind_od,ind_vcb));
@@ -209,8 +210,8 @@ else
     disp([num2str(length(indices_patch)) ' patches out of total ' num2str(Ncell^3) ' patches satisfy your chosen condition with 1% margin.']);
   else %% In case no patch is found, relax the condition
     disp('Loosening patch finding condition to 2%');
-    ind_od  = find((odnum - 2*ee*abs(odnum) -2*ee*sDm_azend <= Dm3D_azend(:)).*(Dm3D_azend(:) <= odnum + 2*ee*abs(odnum) +2*ee*sDm_azend   ));
-    ind_vcb = find(((1-2*ee)*Vcbnum                <= Vcb_azend(:) ).*(Vcb_azend(:)  <= (1+2*ee)*Vcbnum+2*ee*rmsVcb_azend));
+    ind_od  = find((odnum - 2*ee_d*abs(odnum) -2*ee_d*sDm_azend <= Dm3D_azend(:)).*(Dm3D_azend(:) <= odnum + 2*ee_d*abs(odnum) +2*ee_d*sDm_azend   ));
+    ind_vcb = find(((1-2*ee_v)*Vcbnum                <= Vcb_azend(:) ).*(Vcb_azend(:)  <= (1+2*ee_v)*Vcbnum+2*ee_v*rmsVcb_azend));
     indices_patch = ind_od(ismember(ind_od,ind_vcb));
     if (length(indices_patch)==0)
       disp('No such patch exists. Note that Vcb=0 case is very rare by nature!!');

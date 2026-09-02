@@ -39,6 +39,7 @@ icc = iccdat(1:3);
 Dc  = iccdat(4);
 Db  = iccdat(5);
 Thc = iccdat(6);
+Thb = iccdat(7);
 
 fin = fopen('stats_zend.dat','r');
 dum = fgetl(fin);
@@ -66,8 +67,9 @@ else
   %% lock fb_l/fc_l ratio locked for the patch. In practice very close to fb/fc.
   fc_l         = (1+Dc)*fc / ((1+Dc)*fc + (1+Db)*fb); %% local CDM fraction
   fb_l         = 1 - fc_l; %% local CDM fraction
-  Ddot_over_D1 = -Thc/(1+Dc);  %% Myr^-1, using dD/dt=-Th relation, and follow CDM only.
-
+  Thm          = fc * Thc + fb * Thb;
+  
+  Ddot_over_D1 = -Thm/(1+Dm);  %% Myr^-1, using dD/dt=-Th relation, and follow total matter.
   H_i          = H0*thefactor; %% initial Hubble constant (Myr^-1) for global, flat universe
   H_loc_i = H_i - (1/3)*Ddot_over_D1; %% As in Goldberg & Vogeley (2004, eq. 3)
 
