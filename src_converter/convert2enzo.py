@@ -1,6 +1,12 @@
 ## Converts bccomics_setup-generated binaries into enzo ICs.
 ## Author: Britton Smith
 
+## ==================================================================================
+## Update (2026.09.04)
+## Fixed deprecated 'np.int' to built-in 'int' for modern NumPy (>= 1.24) compatibility.
+## dim = np.int(np.round(csize**(1./rank))) -> dim = int(np.round(csize**(1./rank)))
+## ==================================================================================
+
 import h5py
 import numpy as np
 import struct
@@ -41,7 +47,7 @@ def convert_file(input_filename, output_filename,
     if grid:
         rank = 3
         csize = data[0].size
-        dim = np.int(np.round(csize**(1./rank)))
+        dim = int(np.round(csize**(1./rank)))
         shape = dim * np.ones(rank, dtype=dtype)
         topgriddims = shape
         end = shape
