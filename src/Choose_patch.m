@@ -108,14 +108,14 @@ if patchidxinput_flag
 elseif choose_zi_flag
   %% When zi values are used: ------------------------------------------- begin
   disp(['Standard deviation of Matter overdensities (sDm) is ' num2str(stdDm)]);
-  disp('Choose Matter overdensity environment:');
-  odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense:');
+  disp('Choose Matter overdensity environment: ');
+  odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense: ');
 
   if (odflag==0)
     odnum=0;
   elseif (odflag==1)
     disp('What multiple of sDm away from the mean overdensity, 0? Example: for Delta_m = +1.5*sDm, Enter 1.5');
-    odnum = input('Enter a floating-point number:');
+    odnum = input('Enter a floating-point number: ');
     odnum = abs(odnum)*stdDm; %% into actual value
   elseif (odflag==2)
     disp('What multiple of sDm away from the mean, 0? Example: for Delta_m = -1.5*sDm, Enter 1.5');
@@ -170,14 +170,14 @@ elseif choose_zi_flag
 else
   %% When zzend values are used: ------------------------------------------- begin
   disp(['Standard deviation of Matter overdensities (sDm) is ' num2str(sDm_azend)]);
-  disp('Choose Matter overdensity environment:');
-  odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense:');
+  disp('Choose Matter overdensity environment: ');
+  odflag=input('Input 0 for mean, 1 for overdense, 2 for underdense: ');
 
   if (odflag==0)
     odnum=0;
   elseif (odflag==1)
     disp('What multiple of sDm away from the mean overdensity, 0? Example: for Delta_m = +1.5*sDm, Enter 1.5');
-    odnum = input('Enter a floating-point number:');
+    odnum = input('Enter a floating-point number: ');
     odnum = abs(odnum)*sDm_azend; %% into actual value
   elseif (odflag==2)
     disp('What multiple of sDm away from the mean, 0? Example: for Delta_m = -1.5*sDm, Enter 1.5');
@@ -207,9 +207,9 @@ else
   %% indices of patches satisfying both conditions
   indices_patch = ind_od(ismember(ind_od,ind_vcb));
   if (length(indices_patch)>0)
-    disp([num2str(length(indices_patch)) ' patches out of total ' num2str(Ncell^3) ' patches satisfy your chosen condition with 1% margin.']);
+    disp([num2str(length(indices_patch)) ' patches out of total ' num2str(Ncell^3) ' patches satisfy your chosen condition with 0.5%(sDm) & 1%(Vbc) margin.']);
   else %% In case no patch is found, relax the condition
-    disp('Loosening patch finding condition to 2%');
+    disp('Loosening patch finding condition to 1%(sDm) & 2%(Vbc)');
     ind_od  = find((odnum - 2*ee_d*abs(odnum) -2*ee_d*sDm_azend <= Dm3D_azend(:)).*(Dm3D_azend(:) <= odnum + 2*ee_d*abs(odnum) +2*ee_d*sDm_azend   ));
     ind_vcb = find(((1-2*ee_v)*Vcbnum                <= Vcb_azend(:) ).*(Vcb_azend(:)  <= (1+2*ee_v)*Vcbnum+2*ee_v*rmsVcb_azend));
     indices_patch = ind_od(ismember(ind_od,ind_vcb));
